@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {HttpClient, HttpParams} from "@angular/common/http";
+import {Gif, SearchResponse} from "../interfaces/gifs.interface";
 
 const API_KEYS:string = "63LNyigUA8WPmTxptMkG24pHQFSjQuLF";
 
@@ -9,6 +10,7 @@ const API_KEYS:string = "63LNyigUA8WPmTxptMkG24pHQFSjQuLF";
 export class GifService {
   private _tagHistory: string[] = [];
   private serviceUrl: string = 'https://api.giphy.com/v1/gifs';
+  public gifsList: Gif[] = [];
 
 
   constructor(private http: HttpClient) { }
@@ -27,9 +29,10 @@ export class GifService {
       .set('q',tag)
       .set('limit','12');
 
-    this.http.get(`${this.serviceUrl}/search`,{params})
-      .subscribe((response: any) => {
-        console.log(response);
+    this.http.get<SearchResponse>(`${this.serviceUrl}/search`,{params})
+      .subscribe(response => {
+        this.gifsList = response.data;
+        console.log({Gisf: this.gifsList});
       });
 
     //('https://api.giphy.com/v1/gifs/search?api_key=63LNyigUA8WPmTxptMkG24pHQFSjQuLF&q=valoran&limit=12')
