@@ -13,11 +13,19 @@ export class GifService {
   public gifsList: Gif[] = [];
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.loadLocalStorage();
+    console.log({tagHistory: this._tagHistory});
+  }
 
   get tagHistory(): string[] {
     return [...this._tagHistory];
   }
+
+  private saveLocalStorage():void {
+    localStorage.setItem('tagHistory', JSON.stringify(this._tagHistory));
+  }
+
 
   async searchTag(tag: string): Promise<void> {
     if (tag.trim().length === 0) return;
@@ -32,7 +40,7 @@ export class GifService {
     this.http.get<SearchResponse>(`${this.serviceUrl}/search`,{params})
       .subscribe(response => {
         this.gifsList = response.data;
-        console.log({Gisf: this.gifsList});
+        console.log({gifs: this.gifsList});
       });
 
     //('https://api.giphy.com/v1/gifs/search?api_key=63LNyigUA8WPmTxptMkG24pHQFSjQuLF&q=valoran&limit=12')
@@ -45,6 +53,17 @@ export class GifService {
     }
     this._tagHistory.unshift(tag);
     this._tagHistory = this._tagHistory.splice(0,10);
+    this.saveLocalStorage();
   }
 
+
+  private loadLocalStorage():void {
+    const tags = localStorage.getItem('tagHistory');
+    if (!tags) return;
+    this._tagHistory = JSON.parse(tags);
+    if (this._tagHistory.length > 0) {
+      this.searchTag(this._tagHistory[0]);
+    }
+    return;
+  }
 }
