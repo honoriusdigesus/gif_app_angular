@@ -1,12 +1,10 @@
 <section class="row">
-  <div  *ngFor="let gif of gifs" class="col-md-3 col-sm-6">
-    <div class="card mb-2 text-center">
-      <img [src]="gif.images.downsized_medium.url" class="card-img-top" alt="{{gif.title}}">
-      <div class="card-body">
-        <h5 class="card-title">{{gif.title}}</h5>
-        <p class="card-text">{{gif.alt_text}}</p>
-      </div>
-    </div>
+
+  <div class="row">
+    <gif-card *ngFor="let gif of gifs"
+    [gif]="gif"
+              class="col-md-3 col-sm-6"
+    ></gif-card>
   </div>
 </section>
 
